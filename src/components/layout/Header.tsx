@@ -4,7 +4,7 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   return (
-    <header className="glass sticky top-0 z-30">
+    <header className="glass border-slate-300 sticky top-0 z-30">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-bold text-lg">
           <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 grid place-items-center text-white">✦</span>

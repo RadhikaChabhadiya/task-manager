@@ -12,20 +12,20 @@ const tasksSlice = createSlice({
     name: "tasks",
     initialState,
     reducers: {
-        setTasks: (s, a: PayloadAction<Task[]>) => { s.items = a.payload; },
-        addTask: (s, a: PayloadAction<Task>) => { s.items.unshift(a.payload); },
-        updateTask: (s, a: PayloadAction<Task>) => {
-            const i = s.items.findIndex((t) => t.id === a.payload.id);
-            if (i !== -1) s.items[i] = a.payload;
+        setTasks: (state, action: PayloadAction<Task[]>) => { state.items = action.payload; },
+        addTask: (state, action: PayloadAction<Task>) => { state.items.unshift(action.payload); },
+        updateTask: (state, action: PayloadAction<Task>) => {
+            const i = state.items.findIndex((t) => t.id === action.payload.id);
+            if (i !== -1) state.items[i] = action.payload;
         },
-        removeTask: (s, a: PayloadAction<number>) => {
-            s.items = s.items.filter((t) => t.id !== a.payload);
+        removeTask: (state, action: PayloadAction<number>) => {
+            state.items = state.items.filter((t) => t.id !== action.payload);
         },
-        toggleTask: (s, a: PayloadAction<number>) => {
-            const t = s.items.find((x) => x.id === a.payload);
+        toggleTask: (state, action: PayloadAction<number>) => {
+            const t = state.items.find((x) => x.id === action.payload);
             if (t) t.completed = !t.completed;
         },
-        selectTask: (s, a: PayloadAction<number | null>) => { s.selectedId = a.payload; },
+        selectTask: (state, action: PayloadAction<number | null>) => { state.selectedId = action.payload; },
     },
 });
 

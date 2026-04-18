@@ -7,9 +7,9 @@ const filtersSlice = createSlice({
   name: "filters",
   initialState,
   reducers: {
-    setSearch: (s, a: PayloadAction<string>) => { s.search = a.payload; },
-    setStatus: (s, a: PayloadAction<TaskFilters["status"]>) => { s.status = a.payload; },
-    setSortBy: (s, a: PayloadAction<TaskFilters["sortBy"]>) => { s.sortBy = a.payload; },
+    setSearch: (state, action: PayloadAction<string>) => { state.search = action.payload; },
+    setStatus: (state, action: PayloadAction<TaskFilters["status"]>) => { state.status = action.payload; },
+    setSortBy: (state, action: PayloadAction<TaskFilters["sortBy"]>) => { state.sortBy = action.payload; },
     resetFilters: () => initialState,
   },
 });
