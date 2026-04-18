@@ -1,61 +1,61 @@
 "use client";
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/common/Button";
+import { useTaskItem } from "@/hook/useTaskItem";
 import type { Task } from "@/types/task";
-import { useDeleteTask, useUpdateTask } from "@/hook/useTask";
 
 export function TaskItem({ task }: { task: Task }) {
-  const update = useUpdateTask();
-  const del = useDeleteTask();
-
-  const isCompleted = task.completed;
+  const {
+    isCompleted,
+    goToDetail,
+    toggleTask,
+    deleteTask,
+    isDeleting,
+  } = useTaskItem(task);
 
   return (
-    <li className="group relative flex flex-col gap-2 rounded-2xl p-4 glass hover:shadow-xl transition-all duration-200 border border-white/10">
+    <li
+      onClick={goToDetail}
+      className="group relative flex flex-col gap-2 rounded-2xl p-4 glass hover:shadow-xl transition-all duration-200 border border-slate-300 dark:border-white/10 cursor-pointer"
+    >
       <div className="flex items-center gap-3">
         <input
           type="checkbox"
           checked={isCompleted}
-          onChange={() =>
-            update.mutate({ id: task.id, completed: !isCompleted })
-          }
+          onClick={(e) => e.stopPropagation()}
+          onChange={toggleTask}
           className="w-5 h-5 rounded accent-brand-600 cursor-pointer"
-          aria-label={`Mark ${task.title} ${isCompleted ? "pending" : "completed"
-            }`}
         />
-        <Link
-          href={`/tasks/${task.id}`}
-          className={`flex-1 font-medium truncate transition ${isCompleted
-            ? "line-through text-slate-400"
-            : "text-white group-hover:text-brand-400"
-            }`}
+        <span
+          className={`flex-1 font-medium truncate transition ${
+            isCompleted
+              ? "line-through text-slate-400"
+              : "text-slate-900 dark:text-white group-hover:text-brand-400"
+          }`}
         >
           {task.title}
-        </Link>
-        <span
-          className={`text-xs px-3 py-1 rounded-full font-medium ${isCompleted
-            ? "bg-green-500/20 text-green-400 border border-green-500/30"
-            : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-            }`}
-        >
-          {isCompleted ? "Completed" : "Pending"}
-        </span>
-      </div>
-
-      {/* Bottom Row */}
-      <div className="flex items-center justify-between text-xs text-slate-400">
-        {/* User ID */}
-        <span className="opacity-70">
-          User: <span className="text-slate-300">{task.userId}</span>
         </span>
         <Button
           variant="danger"
-          onClick={() => del.mutate(task.id)}
-          disabled={del.isPending}
-          className="opacity-0 group-hover:opacity-100 transition py-2"
+          onClick={deleteTask}
+          disabled={isDeleting}
+          className="opacity-0 group-hover:opacity-100 transition py-1.5 border dark:border-none"
         >
           Delete
         </Button>
+      </div>
+      <div className="flex gap-2 text-sm">
+        <span
+          className={`px-3 py-1 rounded-full ${
+            isCompleted
+              ? "bg-emerald-100 text-emerald-700 border dark:border-none dark:bg-emerald-900/40 dark:text-emerald-300"
+              : "bg-amber-100 text-amber-700 border dark:border-none dark:bg-amber-900/40 dark:text-amber-300"
+          }`}
+        >
+          {isCompleted ? "Completed" : "Pending"}
+        </span>
+        <span className="px-3 py-1 rounded-full bg-slate-100 border dark:border-none dark:bg-slate-800">
+          User #{task.userId}
+        </span>
       </div>
     </li>
   );

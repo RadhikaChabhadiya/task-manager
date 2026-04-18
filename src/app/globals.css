@@ -22,12 +22,12 @@
   }
 }
 
-@source "../app";
-@source "../components";
+@source "./app/**/*.{js,ts,jsx,tsx}";
+@source "./components/**/*.{js,ts,jsx,tsx}";
 
 :root { color-scheme: light dark; }
 
-html, body { height: 100%; }
+html, body { min-height: 100vh; }
 
 body {
   @apply bg-gradient-to-br from-slate-50 via-white to-brand-50 text-slate-900

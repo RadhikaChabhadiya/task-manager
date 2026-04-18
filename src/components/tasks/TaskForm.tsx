@@ -1,31 +1,32 @@
 "use client";
-import { useState, FormEvent } from "react";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { useCreateTask } from "@/hook/useTask";
+import { Input } from "@/components/common/Input";
+import { Button } from "@/components/common/Button";
+import { useTaskForm } from "@/hook/useTaskForm";
 
 export function TaskForm() {
-  const [title, setTitle] = useState("");
-  const create = useCreateTask();
-
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-    create.mutate(
-      { title: title.trim(), completed: false, userId: 1 },
-      { onSuccess: () => setTitle("") },
-    );
-  };
+  const {
+    title,
+    setTitle,
+    error,
+    onSubmit,
+    isPending,
+  } = useTaskForm();
 
   return (
-    <form onSubmit={onSubmit} className="glass rounded-2xl p-4 flex gap-3">
-      <Input
-        placeholder="Add a new task…"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <Button type="submit" disabled={create.isPending || !title.trim()}>
-        {create.isPending ? "Adding…" : "Add"}
+    <form onSubmit={onSubmit} className="glass border-slate-300 rounded-2xl p-4 flex items-start gap-3">
+      <div className="flex-1">
+        <Input
+          placeholder="Add a new task…"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full"
+        />
+        {error && (
+          <p className="text-sm text-red-500 mt-1">{error}</p>
+        )}
+      </div>
+      <Button type="submit" disabled={isPending || !title.trim()} className="py-3 shrink-0 self-start">
+        {isPending ? "Adding…" : "Add"}
       </Button>
     </form>
   );

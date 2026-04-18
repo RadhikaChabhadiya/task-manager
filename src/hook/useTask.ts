@@ -9,21 +9,36 @@ import { useAppDispatch } from "@/store";
 export const TASKS_KEY = ["tasks"] as const;
 
 export function useTasksQuery() {
-    return useQuery({ queryKey: TASKS_KEY, queryFn: tasksApi.list });
+    return useQuery<Task[]>({ queryKey: TASKS_KEY, queryFn: tasksApi.list });
+}
+
+export function useTask(id: number, options?: { enabled?: boolean }) {
+  return useQuery<Task>({
+    queryKey: ["task", id],
+    queryFn: () => tasksApi.get(id),
+    enabled: options?.enabled ?? Number.isFinite(id),
+    retry: 1,
+  });
 }
 
 export function useCreateTask() {
-    const qc = useQueryClient();
-    const dispatch = useAppDispatch();
-    return useMutation({
-        mutationFn: (input: CreateTaskInput) => tasksApi.create(input),
-        onSuccess: (task) => {
-            const optimistic: Task = { ...task, id: Date.now(), createdAt: new Date().toISOString() };
-            qc.setQueryData<Task[]>(TASKS_KEY, (old = []) => [optimistic, ...old]);
-            dispatch(addTask(optimistic));
-            toast.success("Task created");
-        },
-    });
+  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
+  return useMutation({
+    mutationFn: tasksApi.create,
+    onSuccess: (task) => {
+      const localTask: Task = {
+        ...task,
+        id: Date.now(),
+        createdAt: new Date().toISOString(),
+      };
+      dispatch(addTask(localTask));
+      qc.setQueryData<Task[]>(TASKS_KEY, (old = []) => [
+        localTask,
+        ...old,
+      ]);
+    },
+  });
 }
 
 export function useUpdateTask() {
@@ -46,7 +61,7 @@ export function useUpdateTask() {
         },
         onSuccess: (task) => {
             dispatch(updateTask(task));
-            toast.success("Task updated");
+            toast.success("Task updated successfully");
         },
     });
 }
@@ -67,6 +82,6 @@ export function useDeleteTask() {
             if (ctx?.prev) qc.setQueryData(TASKS_KEY, ctx.prev);
             toast.error("Delete failed");
         },
-        onSuccess: () => toast.success("Task deleted"),
+        onSuccess: () => toast.success("Task deleted successfully"),
     });
 }

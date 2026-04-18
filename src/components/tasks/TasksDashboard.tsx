@@ -8,55 +8,56 @@ import { TaskForm } from "./TaskForm";
 import type { Task } from "@/types/task";
 import { useTasksQuery } from "@/hook/useTask";
 import { useDebounce } from "@/hook/useDebounce";
+import { ErrorMessage } from "../common/ErrorMessage";
+import { useFilteredTasks } from "@/hook/useFilteredTasks";
+import { mergeTasks } from "@/utils/tasks";
 
-export function TasksDashboard({ initialTasks }: { initialTasks: Task[] }) {
+type Props = {
+  initialTasks: Task[];
+};
+
+export function TasksDashboard({ initialTasks }: Props) {
   const dispatch = useAppDispatch();
-  const { data, isLoading, isError, refetch } = useTasksQuery();
-  const filters = useAppSelector((s) => s.filters);
+  const { data, isLoading, isFetching, isError, refetch } = useTasksQuery();
+  const filters = useAppSelector((state) => state.filters);
+  const localTasks = useAppSelector((state) => state.tasks.items);
   const debouncedSearch = useDebounce(filters.search, 300);
+  const isInitialLoading = isLoading && isFetching && !initialTasks.length;
+
+  const tasks = useMemo(() => {
+    const apiTasks = data ?? initialTasks;
+    return mergeTasks(localTasks, apiTasks);
+  }, [data, initialTasks, localTasks]);
+
+  const filteredTasks = useFilteredTasks(tasks, filters, debouncedSearch);
 
   useEffect(() => {
-    if (data?.length) dispatch(setTasks(data));
-    else if (initialTasks.length) dispatch(setTasks(initialTasks));
+    const source = data?.length ? data : initialTasks;
+    if (source?.length) {
+      dispatch(setTasks(source));
+    }
   }, [data, initialTasks, dispatch]);
-
-  const tasks = data ?? initialTasks;
-
-  const filtered = useMemo(() => {
-    let list = [...tasks];
-    if (debouncedSearch) {
-      const q = debouncedSearch.toLowerCase();
-      list = list.filter((t) => t.title.toLowerCase().includes(q));
-    }
-    if (filters.status !== "all") {
-      list = list.filter((t) => (filters.status === "completed" ? t.completed : !t.completed));
-    }
-    if (filters.sortBy === "title") list.sort((a, b) => a.title.localeCompare(b.title));
-    if (filters.sortBy === "newest") list.reverse();
-    return list;
-  }, [tasks, debouncedSearch, filters.status, filters.sortBy]);
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <h1 className="text-3xl font-bold">Your Tasks</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            {filtered.length} of {tasks.length} shown
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            {filteredTasks.length} of {tasks.length} shown
           </p>
         </div>
-      </div>
+      </header>
       <TaskForm />
       <TaskFilters />
       {isError ? (
-        <div className="glass rounded-2xl p-6 text-center">
-          <p className="text-red-500">Failed to load tasks.</p>
-          <button onClick={() => refetch()} className="mt-2 text-brand-600 hover:underline">
-            Retry
-          </button>
-        </div>
+        <ErrorMessage
+          description="Failed to load tasks"
+          actionLabel="Retry"
+          onAction={refetch}
+        />
       ) : (
-        <TaskList tasks={filtered} loading={isLoading && !initialTasks.length} />
+        <TaskList tasks={filteredTasks} loading={isInitialLoading} />
       )}
     </div>
   );

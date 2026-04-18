@@ -21,9 +21,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
-          <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-          <ReactQueryDevtools initialIsOpen={false} />
         </ThemeProvider>
+        <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </Provider>
   );
