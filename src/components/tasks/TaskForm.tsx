@@ -13,7 +13,7 @@ export function TaskForm() {
   } = useTaskForm();
 
   return (
-    <form onSubmit={onSubmit} className="glass border-slate-300 rounded-2xl p-4 flex items-start gap-3">
+    <form onSubmit={onSubmit} aria-label="task-form" className="glass border-slate-300 rounded-2xl p-4 flex items-start gap-3">
       <div className="flex-1">
         <Input
           placeholder="Add a new task…"
