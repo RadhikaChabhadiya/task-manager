@@ -37,20 +37,8 @@ export function createQueryClientWrapper() {
 
 export function createSubmitEvent(
   preventDefault = jest.fn(),
-): FormEvent<HTMLFormElement> {
-  return {
-    preventDefault,
-    target: {} as EventTarget,
-    currentTarget: {} as EventTarget,
-    nativeEvent: {} as Event,
-    bubbles: false,
-    cancelable: false,
-    defaultPrevented: false,
-    eventPhase: 0,
-    isTrusted: false,
-    timeStamp: 0,
-    type: "submit",
-  } as FormEvent<HTMLFormElement>;
+): Pick<FormEvent<HTMLFormElement>, "preventDefault"> {
+  return { preventDefault };
 }
 
 export function createTaskPayload(title: string): CreateTaskInput {
