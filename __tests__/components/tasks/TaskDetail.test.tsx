@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import React from "react";
 import TaskDetail from "@/components/tasks/TaskDetail";
 import { useTaskDetail } from "@/hook/useTaskDetail";
 import { notFound } from "next/navigation";
@@ -12,7 +13,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock("next/link", () => {
-  return ({ children }: any) => <a>{children}</a>;
+  return ({ children }: { children: React.ReactNode }) => <a>{children}</a>;
 });
 
 jest.mock("@/hook/useTaskDetail", () => ({

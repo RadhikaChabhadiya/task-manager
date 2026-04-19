@@ -34,7 +34,7 @@ jest.mock("@/components/tasks/TaskFilters", () => ({
 }));
 
 jest.mock("@/components/tasks/TaskList", () => ({
-  TaskList: ({ tasks, loading }: any) => (
+  TaskList: ({ tasks, loading }: { tasks: Task[]; loading: boolean }) => (
     <div data-testid="task-list">
       {loading ? "loading" : `tasks:${tasks.length}`}
     </div>
