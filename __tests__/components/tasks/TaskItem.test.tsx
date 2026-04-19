@@ -1,14 +1,13 @@
 import { TaskItem } from "@/components/tasks/TaskItem";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { mockTask } from "__mocks__/tasks";
 
-// mock router
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: jest.fn(),
   }),
 }));
 
-// mock hooks
 const mockUpdate = jest.fn();
 const mockDelete = jest.fn();
 
@@ -22,13 +21,6 @@ jest.mock("@/hook/useTask", () => ({
   }),
 }));
 
-const mockTask = {
-  id: 1,
-  title: "Test Task",
-  completed: false,
-  userId: 1,
-};
-
 describe("TaskItem", () => {
   it("renders task title", () => {
     render(<TaskItem task={mockTask} />);
@@ -38,18 +30,14 @@ describe("TaskItem", () => {
   it("calls update on checkbox toggle", () => {
     render(<TaskItem task={mockTask} />);
     const checkbox = screen.getByRole("checkbox");
-
     fireEvent.click(checkbox);
-
     expect(mockUpdate).toHaveBeenCalled();
   });
 
   it("calls delete when delete button clicked", () => {
     render(<TaskItem task={mockTask} />);
     const deleteBtn = screen.getByText("Delete");
-
     fireEvent.click(deleteBtn);
-
     expect(mockDelete).toHaveBeenCalledWith(1);
   });
 });

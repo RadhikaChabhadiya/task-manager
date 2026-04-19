@@ -20,7 +20,6 @@ export function useTaskDetail() {
     data,
     isLoading,
     isError,
-    isFetching,
   } = useTask(taskId, {
     enabled: !localTask,
   });
@@ -35,7 +34,6 @@ export function useTaskDetail() {
     taskId,
     isLoading,
     isError,
-    isFetching,
     taskStatus,
   };
 }

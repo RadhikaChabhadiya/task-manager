@@ -6,11 +6,12 @@ const SKELETON_COUNT = 5;
 
 function TaskListSkeleton() {
   return (
-    <div className="space-y-3">
+    <div data-testid="task-skeleton-container"  className="space-y-3">
       {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
         <div
           key={i}
           className="glass h-26 animate-pulse rounded-xl border-slate-300 bg-slate-200/60"
+          data-testid="task-skeleton-item"
         />
       ))}
     </div>

@@ -10,12 +10,11 @@ export default function TaskDetail() {
     router,
     task,
     isLoading,
-    isFetching,
     isError,
     taskStatus,
   } = useTaskDetail();
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return <Skeleton />;
   }
 
@@ -29,7 +28,7 @@ export default function TaskDetail() {
     );
   }
 
-  if (!task || !taskStatus) notFound();
+  if (!task || !taskStatus) return notFound();
 
   const { isCompleted, statusLabel, statusClass, titleClass } =
     taskStatus;

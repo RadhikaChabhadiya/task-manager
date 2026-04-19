@@ -18,11 +18,11 @@ type Props = {
 
 export function TasksDashboard({ initialTasks }: Props) {
   const dispatch = useAppDispatch();
-  const { data, isLoading, isFetching, isError, refetch } = useTasksQuery();
+  const { data, isLoading, isError, refetch } = useTasksQuery();
   const filters = useAppSelector((state) => state.filters);
   const localTasks = useAppSelector((state) => state.tasks.items);
   const debouncedSearch = useDebounce(filters.search, 300);
-  const isInitialLoading = isLoading && isFetching && !initialTasks.length;
+  const isInitialLoading = isLoading && !initialTasks.length;
 
   const tasks = useMemo(() => {
     const apiTasks = data ?? initialTasks;
@@ -42,7 +42,7 @@ export function TasksDashboard({ initialTasks }: Props) {
     <div className="space-y-6 animate-fade-in">
       <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h1 className="text-3xl font-bold">Your Tasks</h1>
+          <h1 className="text-3xl font-bold">Tasks</h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {filteredTasks.length} of {tasks.length} shown
           </p>

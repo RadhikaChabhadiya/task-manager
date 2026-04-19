@@ -16,13 +16,13 @@ const config: Config = {
 
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
 
-  transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
-  },
   testMatch: [
     '**/__tests__/**/*.(ts|tsx)',
     '**/?(*.)+(test|spec).(ts|tsx)',
   ],
+
+  maxWorkers: '50%',
+  clearMocks: true,
 }
 
 export default createJestConfig(config)
